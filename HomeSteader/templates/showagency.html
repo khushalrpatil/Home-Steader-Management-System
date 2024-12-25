@@ -1,0 +1,12 @@
+{% extends "navigation.html" %}
+{% block content %}
+<div class="product-section">
+    <h1>Our Registered Agencies</h1>
+    {% for i in data %}
+    <div class="product-card">
+        <img src="{{ i.image.url }}" alt="Image" style="height: 90%;">
+        <h5><a href="/agency/{{i.name}}">{{i.name}}</a></h5>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

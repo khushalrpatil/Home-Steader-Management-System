@@ -1,0 +1,95 @@
+* {
+    margin: 0%;
+    padding: 0%;
+}
+
+.product-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 5px;
+    width: 98%;
+    margin: auto;
+    text-align: center;
+}
+
+.product-section h1 {
+    flex-basis: 100%;
+}
+.product-section form {
+    flex-basis: 100%;
+}
+.product-card {
+    width: 15%;
+    height: 260px;
+    min-width: 160px;
+    border-radius: 20px;
+    padding: 8px;
+    border: 2px solid black;
+    margin: 3px 3px;
+}
+
+.product-card img {
+    width: 100%;
+    height: 63%;
+    border-radius: 20px;
+}
+
+.product-card a {
+    text-decoration: none;
+    color: black;
+}
+
+.product-card .icons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.icons a {
+    color: green;
+    font-size: 23px;
+}
+
+.carousel-item {
+    height: 33vh;
+}
+
+.carousel-item img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}
+
+.info-card {
+    width: 50%;
+    margin: auto;
+    border-radius: 20px solid green;
+    padding: 8px;
+    height: 70vh;
+}
+
+.info-card img {
+    width: 100%;
+    height: 50%;
+    border-radius: 20px;
+}
+
+.info-card table td {
+    padding: 8px;
+}
+
+.buy-card {
+    width: 25%;
+    margin: auto;
+    border-radius: 20px;
+    padding: 10px;
+    min-width: 250px;
+    height: 50vh;
+    text-align: center;
+}
+
+.buy-card img {
+    width: 100%;
+    height: 60%;
+    border-radius: 20px;
+}

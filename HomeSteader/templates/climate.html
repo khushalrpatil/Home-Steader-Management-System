@@ -1,0 +1,75 @@
+{% extends "navigation.html" %}
+{% block title %}Climate{% endblock title %}
+{% block style %}
+<style>
+    .weather-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .weather-info img {
+        width: 50px;
+        height: 50px;
+    }
+    .center-button {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+</style>
+{% endblock style %}
+{% block content %}
+<div class="container">
+    <div class="weather-container">
+        <h1 class="text-center">Check Weather</h1>
+        <form id="cityForm" class="mb-4">
+            <div class="form-group">
+                <label for="cityInput">Enter City Name:</label>
+                <input type="text" id="cityInput" name="cityInput" class="form-control" required>
+            </div>
+            <div class="center-button">
+                <button type="submit" class="btn btn-primary">Get Weather</button>
+            </div>
+        </form>
+        <div id="weatherInfo" class="weather-info text-center"></div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('cityForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const apiKey = 'a8f1af6015e42380a60202639afe65f8';
+        const city = document.getElementById('cityInput').value.trim();
+
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const temperatureCelsius = (data.main.temp - 273.15).toFixed(2);
+                const weatherDescription = data.weather[0].description;
+                const weatherIcon = data.weather[0].icon;
+                const weatherIconUrl = `http://openweathermap.org/img/wn/${weatherIcon}.png`;
+
+                const weatherInfoDiv = document.getElementById('weatherInfo');
+                weatherInfoDiv.innerHTML = `<h2>Weather in ${city}:</h2>
+                                            <p>Temperature: ${temperatureCelsius} °C</p>
+                                            <p>Description: ${weatherDescription}</p>
+                                            <img src="${weatherIconUrl}" alt="${weatherDescription}" class="img-fluid">`;
+            })
+            .catch(error => {
+                const weatherInfoDiv = document.getElementById('weatherInfo');
+                weatherInfoDiv.innerHTML = `<p class="text-danger">Error fetching weather data: ${error.message}</p>`;
+            });
+    });
+</script>
+{% endblock content %}

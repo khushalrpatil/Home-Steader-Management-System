@@ -1,0 +1,29 @@
+{% extends "admin.html" %}
+{% block content %}
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">Contact Person</th>
+				<th scope="col">Phone Number</th>
+				<th scope="col">Email</th>
+				<th scope="col">Status</th>
+				<th scope="col">Image</th>
+				<th scope="col">Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for agency in agencies %}
+			<tr>
+				<td>{{ agency.name }}</td>
+				<td>{{ agency.contact_person }}</td>
+				<td>{{ agency.phone_number }}</td>
+				<td>{{ agency.email }}</td>
+				<td>{{ agency.approved }}</td>
+				<td><img src="/images/{{agency.image}}" alt="{{agency.image.url}}" width="200px" height="200px"></td>
+				<td><a class="btn btn-primary" href="/status/{{agency.id}}">Change Status</a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock content %}
