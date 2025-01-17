@@ -1,0 +1,69 @@
+{% extends "navigation.html" %}
+{% block style %}
+{% endblock style %}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .form-container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 50px auto;
+    }
+    .form-title {
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: 600;
+        color: #343a40;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+</style>
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-title">Add New Product</div>
+        <form method="post" action="/product/addProduct" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="my-3">
+                <label for="name" class="form-label">Product Name</label>
+                <input type="text" class="form-control" name="name" placeholder="Enter Product Name" required>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" aria-label="Default select example" name="category" required>
+                    <option selected disabled>Select Category</option>
+                    <option value="Crop">Crop</option>
+                    <option value="Fertilizer">Fertilizer</option>
+                    <option value="Vegetable">Vegetable</option>
+                    <option value="Seed">Seed</option>
+                    <option value="Fruit">Fruit</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Product Price</label>
+                <input type="number" class="form-control" name="price" placeholder="Enter Product Price" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Product Description</label>
+                <textarea class="form-control" name="description" rows="4" placeholder="Enter Product Description"
+                          required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Product Image</label>
+                <input class="form-control" type="file" name="image" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

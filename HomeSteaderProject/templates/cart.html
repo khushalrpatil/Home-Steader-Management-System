@@ -1,0 +1,25 @@
+{% extends "navigation.html" %}
+{% block content %}
+<table id="reportTable" class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Price</th>
+            <th scope="col">Date</th>
+            <th scope="col">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for report in reports %}
+        <tr>
+            <td>{{ report.product }}</td>
+            <td>{{ report.quantity }}</td>
+            <td>{{ report.price }}</td>
+            <td>{{ report.date }}</td>
+            <td>{{ report.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

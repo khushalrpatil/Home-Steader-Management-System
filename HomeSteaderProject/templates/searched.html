@@ -1,0 +1,23 @@
+{% extends "navigation.html" %}
+{% block title %}Title{% endblock title %}
+{% block content %}
+{% if data %}
+<div class="product-section">
+    {% for i in data %}
+    <div class="product-card">
+        <img src="{{ i.image.url }}" alt="Image">
+        <h5>{{i.name}}</h5>
+        <h6>&#8377;{{i.price}}</h6>
+        <div class="icons">
+            <a href="/product/{{i.name}}"><i class="fa-solid fa-circle-info"></i></a>
+            <a href=""><i class="fa-solid fa-cart-shopping"></i></a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<h1 style="text-align: center;">Sorry, Currently Unavailable</h1>
+{% endif %}
+
+
+{% endblock content %}

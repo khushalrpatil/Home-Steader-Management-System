@@ -1,0 +1,69 @@
+{% extends "admin.html" %}
+{% block content %}
+<form action="{% url 'delete_selected_reports' %}" method="post">
+    {% csrf_token %}
+	<button type="submit" class="btn btn-danger my-3">Delete Selected Products</button>
+    <button class="btn btn-primary my-3 ml-3" onclick="exportToExcel()">Export to Excel</button>
+    <table id="reportTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Select</th>
+                <th scope="col">User</th>
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col">Date
+                    <div class="btn-group">
+                        <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="visually-hidden">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/daily">Daily</a></li>
+                            <li><a class="dropdown-item" href="/weekly">Weekly</a></li>
+                            <li><a class="dropdown-item" href="/monthly">Monthly</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="/reports">All</a></li>
+                        </ul>
+                    </div>
+                </th>
+                <th scope="col">Phone</th>
+                <th scope="col">City</th>
+                <th scope="col">State</th>
+                <th scope="col">ZIP</th>
+                <th scope="col">Street</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td><input type="checkbox" name="selected_reports" value="{{ report.id }}"></td>
+                <td>{{ report.user }}</td>
+                <td>{{ report.product }}</td>
+                <td>{{ report.quantity }}</td>
+                <td>{{ report.price }}</td>
+                <td>{{ report.date }}</td>
+                <td>{{ report.phone }}</td>
+                <td>{{ report.city }}</td>
+                <td>{{ report.state }}</td>
+                <td>{{ report.zip }}</td>
+                <td>{{ report.street }}</td>
+                <td>{{ report.status }}</td>
+                <td><a href="/changestatus/{{report.id}}">Change</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+<script>
+    function exportToExcel() {
+        var wb = XLSX.utils.table_to_book(document.getElementById('reportTable'), { sheet: "Reports" });
+        XLSX.writeFile(wb, 'reports.xlsx');
+    }
+</script>
+{% endblock content %}

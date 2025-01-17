@@ -1,0 +1,168 @@
+{% extends "navigation.html" %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card border-0 shadow">
+                <img src="{{data.image.url}}" class="card-img-top" alt="{{data.name}}">
+                <div class="card-body" style="background-color: #8B4513;">
+                    <h3 class="card-title text-center mb-3">{{data.name}}</h3>
+                    <h4 class="card-text text-center">Price Per Unit: &#8377;{{data.price}}</h4>
+                    <form method="post" action="/product/buyProduct" id="orderForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="product" value="{{data.name}}">
+                        <input type="number" id="total" name="total" style="display: none;">
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" name="quantity" value="1" id="quantity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Contact Number</label>
+                            <input type="number" class="form-control" name="phone" id="phone" placeholder="Enter Contact Number" required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" class="form-control" name="city" id="city" placeholder="City" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="state" class="form-label">State</label>
+                                <input type="text" class="form-control" name="state" id="state" placeholder="State" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="zip" class="form-label">ZIP Code</label>
+                                <input type="text" class="form-control" name="zip" id="zip" placeholder="ZIP Code" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="street" class="form-label">Street Address</label>
+                                <input type="text" class="form-control" name="street" id="street" placeholder="Street Address" required>
+                            </div>
+                        </div>
+                        <h4 class="text-center">Total Price: &#8377;<span class="totalprice">{{data.price}}</span></h4>
+                        <button class="btn btn-success btn-block" id="rzp-button1" disabled>Place Order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    function handlePaymentSuccess(response) {
+        $('#razorpay_payment_id').val(response.razorpay_payment_id);
+        $('#razorpay_order_id').val(response.razorpay_order_id);
+        $('#razorpay_signature').val(response.razorpay_signature);
+        
+        document.getElementById('orderForm').submit();
+    }
+
+    $("document").ready(function () {
+        $(".totalprice").text("{{data.price}}");
+
+        // Enable or disable the place order button based on form validation
+        function togglePlaceOrderButton() {
+            let isValid = true;
+            const phonePattern = /^[6-9]\d{9}$/; // Regular expression for valid phone number in India
+            const cityPattern = /^[a-zA-Z\s-]+$/;
+            const statePattern = /^[a-zA-Z\s-]+$/;
+            const zipPattern = /^\d{5,6}$/;
+
+            $('#orderForm [required]').each(function() {
+                if ($(this).val() === '') {
+                    isValid = false;
+                    return false; // break out of the loop
+                }
+            });
+
+            if (!phonePattern.test($('#phone').val())) {
+                isValid = false;
+            }
+            if (!cityPattern.test($('#city').val())) {
+                isValid = false;
+            }
+            if (!statePattern.test($('#state').val())) {
+                isValid = false;
+            }
+            if (!zipPattern.test($('#zip').val())) {
+                isValid = false;
+            }
+            $('#rzp-button1').prop('disabled', !isValid);
+        }
+
+        // Attach the event listener to required fields
+        $('#orderForm [required]').on('input', togglePlaceOrderButton);
+
+        // Initial check
+        togglePlaceOrderButton();
+    });
+
+    $("#quantity").on('input', function () {
+        let quantity = $(this).val();
+        if (quantity > 0) {
+            let price = parseFloat("{{data.price}}");
+            $(".totalprice").text((quantity * price).toFixed(2));
+        }
+    });
+
+    document.getElementById('rzp-button1').onclick = function (e) {
+        // Prevent the default form submission
+        e.preventDefault();
+        
+        // Get the quantity and price from the input fields
+        var quantity = parseFloat($('#quantity').val()) || 0;
+        var price = parseFloat("{{data.price}}");
+        
+        // Calculate the total amount
+        var total = quantity * price * 100; // Convert to paise (subunits of INR)
+        
+        // Update the total amount field
+        $('#total').val((total / 100).toFixed(2));
+    
+        // Razorpay options with the updated amount
+        var options = {
+            "key": "rzp_test_VbiA7h5nTzLKGA", // Enter the Key ID generated from the Dashboard
+            "amount": total, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "HomeSteader", //your business name
+            "description": "Thank you for buying from us",
+            "image": "/static/images/logo.png",
+            "handler": function (response) {
+                // Handle successful payment
+                handlePaymentSuccess(response);
+            },
+            "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+                "name": "Omkar Nilawar", //your customer's name
+                "email": "omkarnilawar04@gmail.com",
+                "contact": "9370435262"  //Provide the customer's phone number for better conversion rates 
+            },
+            "notes": {
+                "address": "Sanaswadi 412 208"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+    
+        // Initialize Razorpay with the updated options
+        var rzp1 = new Razorpay(options);
+        
+        // Handle payment failed event
+        rzp1.on('payment.failed', function (response) {
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+        });
+    
+        // Open the Razorpay payment form
+        rzp1.open();
+    };
+</script>
+
+{% endblock content %}
